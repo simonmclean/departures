@@ -1,4 +1,6 @@
-# 🚉 Raspberry Pi Train Departures Board for LED Matrix Display
+# 🚉 Departures
+
+Raspberry Pi train departures board for LED matrix display
 
 ## Running on the Pi
 
