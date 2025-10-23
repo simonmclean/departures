@@ -18,9 +18,6 @@ export function setupLedMatrix(): LedMatrixInstance {
     chainLength: 1,
     hardwareMapping: GpioMapping.Regular,
     disableHardwarePulsing: true, // TODO: shouldn't have to do this
-    pixelMapperConfig: LedMatrixUtils.encodeMappers({
-      type: PixelMapperType.U,
-    }),
   };
 
   console.log({ matrixOptions });
@@ -56,6 +53,7 @@ export function drawDepartures(
     //   matrix.height() / 2,
     // )
     // .drawLine(0, 0, matrix.width(), matrix.height())
-    .drawText("Hello world", 0, 0)
+    .drawText("Hello world", 10, 10)
+    .setPixel(0, 0)
     .sync();
 }
