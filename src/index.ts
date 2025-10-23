@@ -20,7 +20,7 @@ function parseEnv(): {
 async function init() {
   const env = parseEnv();
   // NOTE: `font` variable must not be garbage collected, otherwise text rendering won't work
-  const font = new Font("6x10", "fonts/6x10.bdf");
+  const font = new Font("4x6", "fonts/4x6.bdf");
   const matrix = setupLedMatrix(font);
   const departures = await getDepartures({
     apiKey: env.TFL_API_KEY,

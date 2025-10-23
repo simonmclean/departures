@@ -51,7 +51,6 @@ export function drawDepartures(
     //   matrix.height() / 2,
     // )
     // .drawLine(0, 0, matrix.width(), matrix.height())
-    .drawText("Hello world", 10, 10)
-    .setPixel(0, 0)
+    .drawText("Hello world", 1, 1)
     .sync();
 }
