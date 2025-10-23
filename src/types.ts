@@ -9,6 +9,8 @@ export type Departure = {
 
 export type Platform = string;
 
-export type UpcomingDepartures = { first: Departure; second: Departure };
+export type UpcomingDepartures =
+  | { first?: Departure }
+  | { first: Departure; second?: Departure };
 
 export type PlatformDepartures = Record<Platform, UpcomingDepartures>;
