@@ -2,6 +2,7 @@ import "dotenv/config";
 import { getDepartures } from "./tfl/getDepartures";
 import { parseNonEmptyTrimmedString } from "./utils";
 import { drawDepartures, setupLedMatrix } from "./led-matrix";
+import { Font } from "rpi-led-matrix";
 
 function parseEnv(): {
   TFL_API_KEY: string;
@@ -18,7 +19,9 @@ function parseEnv(): {
 
 async function init() {
   const env = parseEnv();
-  const matrix = setupLedMatrix();
+  // NOTE: `font` variable must not be garbage collected, otherwise text rendering won't work
+  const font = new Font("6x10", "fonts/6x10.bdf");
+  const matrix = setupLedMatrix(font);
   const departures = await getDepartures({
     apiKey: env.TFL_API_KEY,
     station: env.STOP_POINT_ID,

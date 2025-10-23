@@ -1,16 +1,14 @@
 import {
   LedMatrix,
-  LedMatrixUtils,
-  PixelMapperType,
   MatrixOptions,
   RuntimeOptions,
   LedMatrixInstance,
   GpioMapping,
-  Font,
+  FontInstance,
 } from "rpi-led-matrix";
 import { PlatformDepartures } from "./types";
 
-export function setupLedMatrix(): LedMatrixInstance {
+export function setupLedMatrix(font: FontInstance): LedMatrixInstance {
   const matrixOptions: MatrixOptions = {
     ...LedMatrix.defaultMatrixOptions(),
     rows: 32,
@@ -31,7 +29,7 @@ export function setupLedMatrix(): LedMatrixInstance {
 
   const matrix = new LedMatrix(matrixOptions, runtimeOptions);
 
-  matrix.font(new Font("6x10", "fonts/6x10.bdf"));
+  matrix.font(font);
 
   return matrix;
 }
