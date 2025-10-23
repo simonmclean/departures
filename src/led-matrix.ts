@@ -5,6 +5,7 @@ import {
   MatrixOptions,
   RuntimeOptions,
   LedMatrixInstance,
+  GpioMapping,
 } from "rpi-led-matrix";
 import { PlatformDepartures } from "./types";
 
@@ -14,6 +15,7 @@ export function setupLedMatrix(): LedMatrixInstance {
     rows: 32,
     cols: 64,
     chainLength: 2,
+    hardwareMapping: GpioMapping.Regular,
     pixelMapperConfig: LedMatrixUtils.encodeMappers({
       type: PixelMapperType.U,
     }),
