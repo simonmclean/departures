@@ -18,14 +18,14 @@ function parseEnv(): {
 
 async function init() {
   const env = parseEnv();
-  // const matrix = setupLedMatrix();
+  const matrix = setupLedMatrix();
   const departures = await getDepartures({
     apiKey: env.TFL_API_KEY,
     station: env.STOP_POINT_ID,
     line: env.LINE_ID,
   });
   console.log(departures);
-  // drawDepartures(matrix, departures);
+  drawDepartures(matrix, departures);
 }
 
 init();
