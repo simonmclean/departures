@@ -15,7 +15,7 @@ export function setupLedMatrix(): LedMatrixInstance {
     ...LedMatrix.defaultMatrixOptions(),
     rows: 32,
     cols: 64,
-    chainLength: 2,
+    chainLength: 1,
     hardwareMapping: GpioMapping.Regular,
     disableHardwarePulsing: true, // TODO: shouldn't have to do this
     pixelMapperConfig: LedMatrixUtils.encodeMappers({
