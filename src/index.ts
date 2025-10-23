@@ -26,6 +26,13 @@ async function init() {
   });
   console.log(departures);
   drawDepartures(matrix, departures);
+
+  process.on("SIGINT", () => {
+    matrix.clear().sync();
+    process.exit(0);
+  });
+
+  setInterval(() => {}, 1 << 30);
 }
 
 init();
