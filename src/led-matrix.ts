@@ -45,8 +45,17 @@ export function drawDepartures(
 ) {
   matrix
     .clear()
-    .brightness(50)
+    .brightness(100)
     .fgColor({ r: 255, g: 255, b: 255 })
+    .setPixel(0, 0)
+    .drawCircle(matrix.width() / 2, matrix.height() / 2, matrix.width() / 2 - 1)
+    .drawRect(
+      matrix.width() / 4,
+      matrix.height() / 4,
+      matrix.width() / 2,
+      matrix.height() / 2,
+    )
+    .drawLine(0, 0, matrix.width(), matrix.height())
     .drawText("Hello world", 0, 0)
     .sync();
 }
