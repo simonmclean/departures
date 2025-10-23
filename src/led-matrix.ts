@@ -34,7 +34,7 @@ export function setupLedMatrix(): LedMatrixInstance {
 
   const matrix = new LedMatrix(matrixOptions, runtimeOptions);
 
-  matrix.font(new Font("6x10", "/fonts/6x10.bdf"));
+  matrix.font(new Font("6x10", "fonts/6x10.bdf"));
 
   return matrix;
 }
