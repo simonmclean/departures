@@ -6,6 +6,7 @@ import {
   RuntimeOptions,
   LedMatrixInstance,
   GpioMapping,
+  Font,
 } from "rpi-led-matrix";
 import { PlatformDepartures } from "./types";
 
@@ -16,6 +17,7 @@ export function setupLedMatrix(): LedMatrixInstance {
     cols: 64,
     chainLength: 2,
     hardwareMapping: GpioMapping.Regular,
+    disableHardwarePulsing: true, // TODO: shouldn't have to do this
     pixelMapperConfig: LedMatrixUtils.encodeMappers({
       type: PixelMapperType.U,
     }),
@@ -31,6 +33,8 @@ export function setupLedMatrix(): LedMatrixInstance {
   console.log({ runtimeOptions });
 
   const matrix = new LedMatrix(matrixOptions, runtimeOptions);
+
+  matrix.font(new Font("6x10", __dirname + "/fonts/6x10.bdf"));
 
   return matrix;
 }
