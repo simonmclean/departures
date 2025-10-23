@@ -21,10 +21,14 @@ export function setupLedMatrix(): LedMatrixInstance {
     }),
   };
 
+  console.log({ matrixOptions });
+
   const runtimeOptions: RuntimeOptions = {
     ...LedMatrix.defaultRuntimeOptions(),
     gpioSlowdown: 2,
   };
+
+  console.log({ runtimeOptions });
 
   const matrix = new LedMatrix(matrixOptions, runtimeOptions);
 
