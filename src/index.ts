@@ -43,7 +43,7 @@ async function init() {
     });
     console.log(departures);
     const rows = departuresToRows(departures, font);
-    console.log(rows);
+    console.log(JSON.stringify(rows, null, 2));
     matrix.clear();
     drawRows(matrix, font, rows);
   } catch (e) {
