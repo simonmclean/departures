@@ -2,6 +2,8 @@ import { FontInstance, Glyph } from "rpi-led-matrix";
 import { Departure, PlatformDepartures } from "../types";
 import { diffMinutes } from "../utils";
 
+const LATENESS_SEVERITY_THRESHOLD_MINS = 5;
+
 export type ColorName = "white" | "black" | "red" | "amber" | "green";
 
 export type GlyphWithColor = Glyph & {
@@ -55,14 +57,15 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
       return [departure.status, "red"];
     }
 
-    const latenessMins = diffMinutes(
-      departure.scheduledDeparture,
-      departure.estimatedDeparture,
-    );
+    const isVeryDelayed =
+      diffMinutes(departure.scheduledDeparture, departure.estimatedDeparture) >
+      LATENESS_SEVERITY_THRESHOLD_MINS;
 
     return [
-      `${departure.status} ${formatDate(departure.estimatedDeparture)}`,
-      latenessMins >= 5 ? "red" : "amber",
+      isVeryDelayed
+        ? `${departure.status} `
+        : "" + formatDate(departure.estimatedDeparture),
+      isVeryDelayed ? "red" : "amber",
     ];
   })();
 
