@@ -13,6 +13,8 @@ import { ColorName, Row } from "./rows";
 
 const TEXT_PADDING = 1;
 
+const BRIGHTNESS = 20;
+
 const COLOR_MAP: Record<ColorName, Color> = {
   white: { r: 255, g: 255, b: 255 },
   black: { r: 0, g: 0, b: 0 },
@@ -33,7 +35,7 @@ export function setupLedMatrix(font: FontInstance): LedMatrixInstance {
     cols: 64,
     chainLength: 2,
     hardwareMapping: GpioMapping.Regular,
-    disableHardwarePulsing: true, // TODO: shouldn't have to do this
+    disableHardwarePulsing: false, // TODO: shouldn't have to do this
   };
 
   const runtimeOptions: RuntimeOptions = {
@@ -53,7 +55,7 @@ export function drawRows(
   font: FontInstance,
   rows: Row[],
 ): void {
-  matrix.brightness(20);
+  matrix.brightness(BRIGHTNESS);
 
   let y = TEXT_PADDING;
 
@@ -82,7 +84,7 @@ export function drawRows(
 export function drawLoadingText(matrix: LedMatrixInstance): void {
   matrix
     .clear()
-    .brightness(20)
+    .brightness(BRIGHTNESS)
     .fgColor(COLOR_MAP.white)
     .drawText("LOADING...", 2, 2)
     .sync();
@@ -93,7 +95,7 @@ export function drawErrorMessage(
   font: FontInstance,
   err: Error,
 ): void {
-  matrix.clear().brightness(20).fgColor(COLOR_MAP.red);
+  matrix.clear().brightness(BRIGHTNESS).fgColor(COLOR_MAP.red);
 
   const lines = LayoutUtils.textToLines(font, matrix.width(), err.message);
 
