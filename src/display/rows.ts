@@ -43,21 +43,27 @@ function formatDate(date: Date): string {
  * */
 function departureToRow(departure: Departure, font: FontInstance): Row {
   const scheduledTime = formatDate(departure.scheduledDeparture);
-  const estimatedTimeOrStatus = departure.estimatedDeparture
-    ? formatDate(departure.estimatedDeparture)
-    : departure.status;
-  const estimatedDepartureColor = (() => {
-    const { estimatedDeparture } = departure;
-    if (!estimatedDeparture) {
-      // No estimated departure is bad
-      return "red";
+  const [estimatedTimeOrStatus, estimatedTimeOrStatusColor]: [
+    string,
+    ColorName,
+  ] = (() => {
+    if (departure.status === "OnTime") {
+      return ["On time", "green"];
     }
 
-    const diffMins = diffMinutes(
+    if (!departure.estimatedDeparture) {
+      return [departure.status, "red"];
+    }
+
+    const latenessMins = diffMinutes(
       departure.scheduledDeparture,
-      estimatedDeparture,
+      departure.estimatedDeparture,
     );
-    return diffMins >= 5 ? "red" : "amber";
+
+    return [
+      formatDate(departure.estimatedDeparture),
+      latenessMins >= 5 ? "red" : "amber",
+    ];
   })();
 
   return {
@@ -68,7 +74,11 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
       space(font),
     ],
     right: [
-      ...stringToGlyphs(estimatedTimeOrStatus, estimatedDepartureColor, font),
+      ...stringToGlyphs(
+        estimatedTimeOrStatus,
+        estimatedTimeOrStatusColor,
+        font,
+      ),
     ],
   };
 }
