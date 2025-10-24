@@ -1,8 +1,13 @@
 import "dotenv/config";
 import { getDepartures } from "./tfl/getDepartures";
 import { parseNonEmptyTrimmedString } from "./utils";
-import { drawDepartures, setupLedMatrix } from "./led-matrix";
-import { Font } from "rpi-led-matrix";
+import {
+  drawErrorMessage,
+  drawLoadingText,
+  setupLedMatrix,
+} from "./display/led-matrix";
+import { departuresToRows } from "./display/rows";
+import { createFont, drawRows } from "./display/led-matrix";
 
 function parseEnv(): {
   TFL_API_KEY: string;
@@ -20,20 +25,32 @@ function parseEnv(): {
 async function init() {
   const env = parseEnv();
   // NOTE: `font` variable must not be garbage collected, otherwise text rendering won't work
-  const font = new Font("4x6", "fonts/4x6.bdf");
+  const font = createFont();
   const matrix = setupLedMatrix(font);
-  const departures = await getDepartures({
-    apiKey: env.TFL_API_KEY,
-    station: env.STOP_POINT_ID,
-    line: env.LINE_ID,
-  });
-  console.log(departures);
-  drawDepartures(matrix, departures);
 
+  // Clear the display before letting the process terminate
   process.on("SIGINT", () => {
     matrix.clear().sync();
     process.exit(0);
   });
+
+  try {
+    drawLoadingText(matrix);
+    const departures = await getDepartures({
+      apiKey: env.TFL_API_KEY,
+      station: env.STOP_POINT_ID,
+      line: env.LINE_ID,
+    });
+    console.log(departures);
+    const rows = departuresToRows(departures, font);
+    console.log(rows);
+    matrix.clear();
+    drawRows(matrix, font, rows);
+  } catch (e) {
+    const err = e instanceof Error ? e : new Error("An unknown error occured");
+    console.error(err);
+    drawErrorMessage(matrix, font, err);
+  }
 
   setInterval(() => {}, 1 << 30);
 }
