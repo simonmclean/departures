@@ -61,10 +61,10 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
       diffMinutes(departure.scheduledDeparture, departure.estimatedDeparture) >
       LATENESS_SEVERITY_THRESHOLD_MINS;
 
+    const formattedDate = formatDate(departure.estimatedDeparture);
+
     return [
-      isVeryDelayed
-        ? `${departure.status} `
-        : "" + formatDate(departure.estimatedDeparture),
+      isVeryDelayed ? `${departure.status} ${formattedDate}` : formattedDate,
       isVeryDelayed ? "red" : "amber",
     ];
   })();
