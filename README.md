@@ -1,18 +1,22 @@
 # 🚉 Departures
 
-Raspberry Pi train departures board for LED matrix display
+Raspberry Pi train departures board for LED matrix display.
+
+Designed to work for a single station with 2 platforms. Displays the next 4 departures, along with their status.
+
+Minimal dependancies.
 
 ## Running on the Pi
 
 ### Prerequisites
 
 - Node 24 is installed
-- Onboard audio is disabled
+- `.env` file exists in the root with the following environment variables
 
 ```bash
-sudo vi /boot/firmware/config.txt
-# Set or update value
-dtparam=audio=off
+TFL_API_KEY
+LINE_ID
+STOP_POINT_ID
 ```
 
 ### Build and run
