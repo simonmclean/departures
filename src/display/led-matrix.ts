@@ -40,7 +40,7 @@ export function setupLedMatrix(font: FontInstance): LedMatrixInstance {
 
   const runtimeOptions: RuntimeOptions = {
     ...LedMatrix.defaultRuntimeOptions(),
-    gpioSlowdown: 2,
+    gpioSlowdown: 4,
   };
 
   const matrix = new LedMatrix(matrixOptions, runtimeOptions);
