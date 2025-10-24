@@ -32,8 +32,8 @@ function space(font: FontInstance): GlyphWithColor {
 }
 
 function formatDate(date: Date): string {
-  const hours = date.getHours().toString();
-  const minutes = date.getMinutes().toString();
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
   return `${hours}:${minutes}`;
 }
 
@@ -42,8 +42,6 @@ function formatDate(date: Date): string {
  * then converts the strings into a sequence of glyphs with appropriate color
  * */
 function departureToRow(departure: Departure, font: FontInstance): Row {
-  const [, maybePlatformNumber] = departure.platform.split("");
-  const platformNumber = parseNonEmptyTrimmedString(maybePlatformNumber);
   const scheduledTime = formatDate(departure.scheduledDeparture);
   const estimatedTimeOrStatus = departure.estimatedDeparture
     ? formatDate(departure.estimatedDeparture)
@@ -54,7 +52,8 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
     left: [
       ...stringToGlyphs(scheduledTime, "white", font),
       space(font),
-      ...stringToGlyphs(platformNumber, "white", font),
+      ...stringToGlyphs(departure.destination, "white", font),
+      space(font)
     ],
     right: [...stringToGlyphs(estimatedTimeOrStatus, statusColor, font)],
   };
