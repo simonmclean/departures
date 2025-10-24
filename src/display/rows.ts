@@ -61,7 +61,7 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
     );
 
     return [
-      formatDate(departure.estimatedDeparture),
+      `${departure.status} ${formatDate(departure.estimatedDeparture)}`,
       latenessMins >= 5 ? "red" : "amber",
     ];
   })();
