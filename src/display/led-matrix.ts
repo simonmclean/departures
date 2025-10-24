@@ -11,15 +11,13 @@ import {
 } from "rpi-led-matrix";
 import { ColorName, Row } from "./rows";
 
-const TEXT_PADDING = {
-  x: 1,
-  y: 1,
-};
+const TEXT_PADDING = 1;
 
 const COLOR_MAP: Record<ColorName, Color> = {
   white: { r: 255, g: 255, b: 255 },
   black: { r: 0, g: 0, b: 0 },
-  red: { r: 255, g: 0, b: 255 },
+  amber: { r: 255, g: 0, b: 255 },
+  red: { r: 255, g: 0, b: 0 },
   green: { r: 0, g: 255, b: 0 },
 };
 
@@ -56,7 +54,7 @@ export function drawRows(
 ): void {
   matrix.brightness(100);
 
-  let y = TEXT_PADDING.x;
+  let y = TEXT_PADDING;
 
   rows.forEach((row) => {
     let cursor = 0;
@@ -67,14 +65,14 @@ export function drawRows(
     });
 
     // Render right aligned text from right to left
-    cursor = matrix.width();
+    cursor = matrix.width() - 1;
 
     row.right.toReversed().forEach(({ char, color, w }) => {
       matrix.fgColor(COLOR_MAP[color]).drawText(char, cursor, y);
       cursor -= w;
     });
 
-    y += font.height() + TEXT_PADDING.x * 2;
+    y += font.height() + TEXT_PADDING * 2;
   });
 
   matrix.sync();

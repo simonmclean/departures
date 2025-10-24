@@ -1,7 +1,8 @@
 import { FontInstance, Glyph } from "rpi-led-matrix";
 import { Departure, PlatformDepartures } from "../types";
+import { diffMinutes } from "../utils";
 
-export type ColorName = "white" | "black" | "red" | "green";
+export type ColorName = "white" | "black" | "red" | "amber" | "green";
 
 export type GlyphWithColor = Glyph & {
   color: ColorName;
@@ -45,7 +46,19 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
   const estimatedTimeOrStatus = departure.estimatedDeparture
     ? formatDate(departure.estimatedDeparture)
     : departure.status;
-  const statusColor = departure.status === "OnTime" ? "white" : "red";
+  const estimatedDepartureColor = (() => {
+    const { estimatedDeparture } = departure;
+    if (!estimatedDeparture) {
+      // No estimated departure is bad
+      return "red";
+    }
+
+    const diffMins = diffMinutes(
+      departure.scheduledDeparture,
+      estimatedDeparture,
+    );
+    return diffMins >= 5 ? "red" : "amber";
+  })();
 
   return {
     left: [
@@ -54,7 +67,9 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
       ...stringToGlyphs(departure.destination, "white", font),
       space(font),
     ],
-    right: [...stringToGlyphs(estimatedTimeOrStatus, statusColor, font)],
+    right: [
+      ...stringToGlyphs(estimatedTimeOrStatus, estimatedDepartureColor, font),
+    ],
   };
 }
 
