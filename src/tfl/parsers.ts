@@ -140,16 +140,9 @@ export function parsePlatformDepartures(response: unknown): PlatformDepartures {
     });
 
     const [first, second] = sorted;
+    const upcoming: UpcomingDepartures = first ? { first, second } : {};
 
-    if (!first) {
-      throw new Error("No first departure");
-    }
-
-    if (!second) {
-      throw new Error("No second departure");
-    }
-
-    return [platform, { first, second }];
+    return [platform, upcoming];
   });
 
   return Object.fromEntries(withNextTwoDepartures);
