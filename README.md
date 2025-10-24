@@ -22,6 +22,6 @@ STOP_POINT_ID
 ### Build and run
 
 ```bash
-npm run dev
+npm run build
 sudo $(which node) ./dist/index.js
 ```
