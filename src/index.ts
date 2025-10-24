@@ -38,7 +38,7 @@ async function init() {
 
   drawLoadingText(matrix);
 
-  setInterval(async () => {
+  async function go() {
     try {
       const departures = await getDepartures({
         apiKey: env.TFL_API_KEY,
@@ -55,7 +55,11 @@ async function init() {
       console.error(err);
       drawErrorMessage(matrix, font, err);
     }
-  }, DATA_FETCH_INTERVAL_SECONDS * 1000);
+  }
+
+  go();
+
+  setInterval(go, DATA_FETCH_INTERVAL_SECONDS * 1000);
 }
 
 init();
