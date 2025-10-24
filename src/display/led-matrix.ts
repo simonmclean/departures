@@ -18,6 +18,7 @@ const COLOR_MAP: Record<ColorName, Color> = {
   black: { r: 0, g: 0, b: 0 },
   amber: { r: 255, g: 0, b: 255 },
   red: { r: 255, g: 0, b: 0 },
+  // I think I have my green and blue channels wired wrong lol
   green: { r: 0, g: 0, b: 255 },
 };
 

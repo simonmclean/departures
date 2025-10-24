@@ -9,6 +9,8 @@ import {
 import { departuresToRows } from "./display/rows";
 import { createFont, drawRows } from "./display/led-matrix";
 
+const DATA_FETCH_INTERVAL_SECONDS = 15;
+
 function parseEnv(): {
   TFL_API_KEY: string;
   STOP_POINT_ID: string;
@@ -34,24 +36,26 @@ async function init() {
     process.exit(0);
   });
 
-  try {
-    drawLoadingText(matrix);
-    const departures = await getDepartures({
-      apiKey: env.TFL_API_KEY,
-      station: env.STOP_POINT_ID,
-      line: env.LINE_ID,
-    });
-    // console.log(departures);
-    const rows = departuresToRows(departures, font);
-    matrix.clear();
-    drawRows(matrix, font, rows);
-  } catch (e) {
-    const err = e instanceof Error ? e : new Error("An unknown error occured");
-    console.error(err);
-    drawErrorMessage(matrix, font, err);
-  }
+  drawLoadingText(matrix);
 
-  setInterval(() => {}, 1 << 30);
+  setInterval(async () => {
+    try {
+      const departures = await getDepartures({
+        apiKey: env.TFL_API_KEY,
+        station: env.STOP_POINT_ID,
+        line: env.LINE_ID,
+      });
+      // console.log(departures);
+      const rows = departuresToRows(departures, font);
+      matrix.clear();
+      drawRows(matrix, font, rows);
+    } catch (e) {
+      const err =
+        e instanceof Error ? e : new Error("An unknown error occured");
+      console.error(err);
+      drawErrorMessage(matrix, font, err);
+    }
+  }, DATA_FETCH_INTERVAL_SECONDS * 1000);
 }
 
 init();
