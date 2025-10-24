@@ -12,7 +12,7 @@ import {
 import { ColorName, Row } from "./rows";
 
 const TEXT_PADDING = {
-  x: 2,
+  x: 1,
   y: 1,
 };
 
@@ -54,7 +54,7 @@ export function drawRows(
   font: FontInstance,
   rows: Row[],
 ): void {
-  matrix.brightness(20);
+  matrix.brightness(100);
 
   let y = TEXT_PADDING.x;
 
@@ -66,9 +66,12 @@ export function drawRows(
       cursor += w;
     });
 
-    row.right.forEach(({ char, color, w }) => {
+    // Render right aligned text from right to left
+    cursor = matrix.width();
+
+    row.right.toReversed().forEach(({ char, color, w }) => {
       matrix.fgColor(COLOR_MAP[color]).drawText(char, cursor, y);
-      cursor += w;
+      cursor -= w;
     });
 
     y += font.height() + TEXT_PADDING.x * 2;

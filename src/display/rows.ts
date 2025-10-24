@@ -1,6 +1,5 @@
 import { FontInstance, Glyph } from "rpi-led-matrix";
 import { Departure, PlatformDepartures } from "../types";
-import { parseNonEmptyTrimmedString } from "../utils";
 
 export type ColorName = "white" | "black" | "red" | "green";
 
@@ -53,7 +52,7 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
       ...stringToGlyphs(scheduledTime, "white", font),
       space(font),
       ...stringToGlyphs(departure.destination, "white", font),
-      space(font)
+      space(font),
     ],
     right: [...stringToGlyphs(estimatedTimeOrStatus, statusColor, font)],
   };
