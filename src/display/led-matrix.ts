@@ -65,7 +65,7 @@ export function drawRows(
     });
 
     // Render right aligned text from right to left
-    cursor = matrix.width() - 1;
+    cursor = matrix.width() - font.stringWidth(" ");
 
     row.right.toReversed().forEach(({ char, color, w }) => {
       matrix.fgColor(COLOR_MAP[color]).drawText(char, cursor, y);
