@@ -41,9 +41,8 @@ async function init() {
       station: env.STOP_POINT_ID,
       line: env.LINE_ID,
     });
-    console.log(departures);
+    // console.log(departures);
     const rows = departuresToRows(departures, font);
-    console.log(JSON.stringify(rows, null, 2));
     matrix.clear();
     drawRows(matrix, font, rows);
   } catch (e) {
