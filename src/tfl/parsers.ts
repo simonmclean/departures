@@ -94,6 +94,10 @@ export function parsePlatformDepartures(response: unknown): PlatformDepartures {
         record,
         true,
       );
+      // Set seconds to zero (start of the minute) as we only want minute-level resolution.
+      // Otherwise a train might be considered delayed if it's running seconds later than scheduled.
+      scheduledDeparture.setSeconds(0, 0);
+      estimatedDeparture?.setSeconds(0, 0);
       const platform = parseString("platformName", record);
       const status = parseString("departureStatus", record);
       const delayInformation = parseString("cause", record, true);
