@@ -63,7 +63,9 @@ function getDelaySeverity(
  * then converts the strings into a sequence of glyphs with appropriate color
  * */
 function departureToRow(departure: Departure, font: FontInstance): Row {
-  const scheduledTime = formatDate(departure.scheduledDeparture);
+  const scheduledTime =
+    departure.scheduledDeparture && formatDate(departure.scheduledDeparture);
+
   const [estimatedTimeOrStatus, estimatedTimeOrStatusColor]: [
     string,
     ColorName,
@@ -72,7 +74,7 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
       return ["On time", "green"];
     }
 
-    if (!departure.estimatedDeparture) {
+    if (!departure.estimatedDeparture || !departure.scheduledDeparture) {
       return [departure.status, "red"];
     }
 
@@ -95,7 +97,7 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
 
   return {
     left: [
-      ...stringToGlyphs(scheduledTime, "white", font),
+      ...stringToGlyphs(scheduledTime || "", "white", font),
       space(font),
       ...stringToGlyphs(departure.destination, "white", font),
       space(font),

@@ -86,26 +86,30 @@ function parseDestination(obj: Record<string, unknown>): Platform {
 export function parsePlatformDepartures(response: unknown): PlatformDepartures {
   const departures = parseArray(response)
     .map<Departure>((element) => {
-      const record = parseRecord(element);
-      const destination = parseDestination(record);
-      const scheduledDeparture = parseDate("scheduledTimeOfDeparture", record);
+      const departure = parseRecord(element);
+      const destination = parseDestination(departure);
+      const scheduledDeparture = parseDate(
+        "scheduledTimeOfDeparture",
+        departure,
+        true,
+      );
       const estimatedDeparture = parseDate(
         "estimatedTimeOfDeparture",
-        record,
+        departure,
         true,
       );
       // Set seconds to zero (start of the minute) as we only want minute-level resolution.
       // Otherwise a train might be considered delayed if it's running seconds later than scheduled.
-      scheduledDeparture.setSeconds(0, 0);
+      scheduledDeparture?.setSeconds(0, 0);
       estimatedDeparture?.setSeconds(0, 0);
-      const platform = parseString("platformName", record);
-      const status = parseString("departureStatus", record);
-      const delayInformation = parseString("cause", record, true);
+      const platform = parseString("platformName", departure);
+      const status = parseString("departureStatus", departure);
+      const delayInformation = parseString("cause", departure, true);
       return {
         platform,
         destination,
-        scheduledDeparture,
         status,
+        ...(scheduledDeparture ? { scheduledDeparture } : undefined),
         ...(estimatedDeparture ? { estimatedDeparture } : undefined),
         ...(delayInformation ? { delayInformation } : undefined),
       };
@@ -140,7 +144,10 @@ export function parsePlatformDepartures(response: unknown): PlatformDepartures {
     [Platform, UpcomingDepartures]
   >(([platform, departures]) => {
     const sorted = departures.toSorted((a, b) => {
-      return a.scheduledDeparture < b.scheduledDeparture ? -1 : 1;
+      if (a.scheduledDeparture && b.scheduledDeparture) {
+        return a.scheduledDeparture < b.scheduledDeparture ? -1 : 1;
+      }
+      return 0;
     });
 
     const [first, second] = sorted;

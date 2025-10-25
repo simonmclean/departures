@@ -1,7 +1,7 @@
 export type Departure = {
   destination: string;
   platform: string;
-  scheduledDeparture: Date;
+  scheduledDeparture?: Date;
   estimatedDeparture?: Date;
   status: string;
   delayInformation?: string;
