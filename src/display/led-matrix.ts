@@ -8,6 +8,8 @@ import {
   Color,
   Font,
   LayoutUtils,
+  HorizontalAlignment,
+  VerticalAlignment,
 } from "rpi-led-matrix";
 import { ColorName, Row } from "./rows";
 
@@ -104,6 +106,8 @@ export function drawErrorMessage(
     font.height(),
     matrix.width(),
     matrix.height(),
+    HorizontalAlignment.Left,
+    VerticalAlignment.Top,
   );
 
   glyphs.forEach(({ char, x, y }) => {
