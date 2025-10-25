@@ -1,16 +1,22 @@
 #!/bin/bash
 
-PROJECT_DIR="/home/simonmclean/departures"
+set -euo pipefail
 
-# Exit immediately if any command fails
-set -e
+USER_DIR="/home/simonmclean"
+PROJECT_DIR="$USER_DIR/departures"
+GIT_BIN="/usr/bin/git"
+NODE_BIN="$USER_DIR/.nvm/versions/node/v24.10.0/bin/node"
+NPM_BIN="$USER_DIR/.nvm/versions/node/v24.10.0/bin/npm"
 
 cd "$PROJECT_DIR"
 
-git fetch
-git reset --hard
-git pull
+sleep 10
 
-npm run build
+# Update project
+$GIT_BIN fetch --all --prune
+$GIT_BIN reset --hard
+$GIT_BIN pull
 
-node "$PROJECT_DIR/dist/index.js" >> "$PROJECT_DIR/log.txt" 2>&1 &
+# Build and run
+"$NPM_BIN" run build
+"$NODE_BIN" "$PROJECT_DIR/dist/index.js" &
