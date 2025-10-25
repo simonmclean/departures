@@ -2,7 +2,18 @@ import { FontInstance, Glyph } from "rpi-led-matrix";
 import { Departure, PlatformDepartures } from "../types";
 import { diffMinutes } from "../utils";
 
-const LATENESS_SEVERITY_THRESHOLD_MINS = 5;
+type LATENESS_SEVERITY = "TRIVIAL" | "MINOR" | "SEVERE";
+
+const LATENESS_THRESHOLDS = {
+  TRIVIAL: 2,
+  MINOR: 5,
+};
+
+const LATENESS_COLORS: Record<LATENESS_SEVERITY, ColorName> = {
+  TRIVIAL: "white",
+  MINOR: "amber",
+  SEVERE: "red",
+};
 
 export type ColorName = "white" | "black" | "red" | "amber" | "green";
 
@@ -39,6 +50,14 @@ function formatDate(date: Date): string {
   return `${hours}:${minutes}`;
 }
 
+function getDelaySeverity(
+  latenessSeconds: number,
+): "TRIVIAL" | "MINOR" | "SEVERE" {
+  if (latenessSeconds <= LATENESS_THRESHOLDS.TRIVIAL) return "TRIVIAL";
+  if (latenessSeconds <= LATENESS_THRESHOLDS.MINOR) return "MINOR";
+  return "SEVERE";
+}
+
 /**
  * Maps Departure fields to display values, assigns them to either left or right alignment,
  * then converts the strings into a sequence of glyphs with appropriate color
@@ -57,15 +76,20 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
       return [departure.status, "red"];
     }
 
-    const isVeryDelayed =
-      diffMinutes(departure.scheduledDeparture, departure.estimatedDeparture) >
-      LATENESS_SEVERITY_THRESHOLD_MINS;
+    const delayMins = diffMinutes(
+      departure.scheduledDeparture,
+      departure.estimatedDeparture,
+    );
+
+    const delaySeverity = getDelaySeverity(delayMins);
 
     const formattedDate = formatDate(departure.estimatedDeparture);
 
     return [
-      isVeryDelayed ? `${departure.status} ${formattedDate}` : formattedDate,
-      isVeryDelayed ? "red" : "amber",
+      delaySeverity === "SEVERE"
+        ? `${departure.status} ${formattedDate}`
+        : formattedDate,
+      LATENESS_COLORS[delaySeverity],
     ];
   })();
 

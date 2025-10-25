@@ -14,8 +14,8 @@ import {
 import { ColorName, Row } from "./rows";
 
 const TEXT_PADDING = 1;
-
 const BRIGHTNESS = 20;
+const FONT_NAME = "4x6";
 
 const COLOR_MAP: Record<ColorName, Color> = {
   white: { r: 255, g: 255, b: 255 },
@@ -27,7 +27,7 @@ const COLOR_MAP: Record<ColorName, Color> = {
 };
 
 export function createFont() {
-  return new Font("4x6", "fonts/4x6.bdf");
+  return new Font(FONT_NAME, `fonts/${FONT_NAME}.bdf`);
 }
 
 export function setupLedMatrix(font: FontInstance): LedMatrixInstance {
