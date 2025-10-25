@@ -12,6 +12,8 @@ NPM_BIN="$USER_DIR/.nvm/versions/node/v24.10.0/bin/npm"
 exec >> "$PROJECT_DIR/cron.log" 2>&1
 echo "---- $(date) boot job start ----"
 
+export PATH="$NODE_DIR:$PATH"
+
 cd "$PROJECT_DIR"
 
 sleep 10
@@ -22,5 +24,6 @@ $GIT_BIN reset --hard
 $GIT_BIN pull
 
 # Build and run
-"$NPM_BIN" run build
-"$NODE_BIN" "$PROJECT_DIR/dist/index.js" &
+npm install
+npm run build
+node "$PROJECT_DIR/dist/index.js" &
