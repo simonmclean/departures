@@ -8,6 +8,10 @@ GIT_BIN="/usr/bin/git"
 NODE_BIN="$USER_DIR/.nvm/versions/node/v24.10.0/bin/node"
 NPM_BIN="$USER_DIR/.nvm/versions/node/v24.10.0/bin/npm"
 
+# Log everything from this script
+exec >> "$PROJECT_DIR/cron.log" 2>&1
+echo "---- $(date) boot job start ----"
+
 cd "$PROJECT_DIR"
 
 sleep 10
