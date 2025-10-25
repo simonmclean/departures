@@ -2,21 +2,22 @@
 
 set -euo pipefail
 
-USER_DIR="/home/simonmclean"
-PROJECT_DIR="$USER_DIR/departures"
+USER_HOME="/home/simonmclean"
+PROJECT_DIR="$USER_HOME/departures"
 GIT_BIN="/usr/bin/git"
-NODE_BIN="$USER_DIR/.nvm/versions/node/v24.10.0/bin/node"
-NPM_BIN="$USER_DIR/.nvm/versions/node/v24.10.0/bin/npm"
 
-# Log everything from this script
-exec >> "$PROJECT_DIR/cron.log" 2>&1
-echo "---- $(date) boot job start ----"
+# Uncomment these lines for logging and troubleshooting
+# exec >> "$PROJECT_DIR/cron.log" 2>&1
+# echo "---- $(date) boot job start ----"
 
-export PATH="$NODE_DIR:$PATH"
+export NVM_DIR="$USER_HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
 cd "$PROJECT_DIR"
 
 sleep 10
+
+nvm use 24 1> /dev/null
 
 # Update project
 $GIT_BIN fetch --all --prune
