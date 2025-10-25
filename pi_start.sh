@@ -7,6 +7,7 @@ PROJECT_DIR="$USER_HOME/departures"
 GIT_BIN="/usr/bin/git"
 
 # Uncomment these lines for logging and troubleshooting
+# You might want to comment out the git commands
 # exec >> "$PROJECT_DIR/cron.log" 2>&1
 # echo "---- $(date) boot job start ----"
 
@@ -24,7 +25,7 @@ $GIT_BIN fetch --all --prune
 $GIT_BIN reset --hard
 $GIT_BIN pull
 
-# Build and run
+# Build and run in the background
 npm install
 npm run build
-node "$PROJECT_DIR/dist/index.js" &
+sudo $(which node) "$PROJECT_DIR/dist/index.js" &
