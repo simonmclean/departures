@@ -56,17 +56,19 @@ async function init() {
       const rows = departuresToRows(departures, font);
       matrix.clear();
       drawRows(matrix, font, rows);
+      setTimeout(() => {
+        run();
+      }, DATA_FETCH_INTERVAL_SECONDS * 1000);
     } catch (e) {
       const err =
         e instanceof Error ? e : new Error("An unknown error occured");
       console.error(err);
       drawErrorMessage(matrix, font, err);
+      setTimeout(() => {
+        run();
+      }, DATA_FETCH_INTERVAL_SECONDS * 1000);
     }
   }
-
-  matrix.afterSync(() => {
-    setTimeout(run, DATA_FETCH_INTERVAL_SECONDS * 1000);
-  });
 
   run();
 }
