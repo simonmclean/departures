@@ -40,7 +40,7 @@ async function init() {
 
   drawLoadingText(matrix);
 
-  async function go() {
+  async function run() {
     try {
       const currentHour = new Date().getHours();
       if (currentHour > ACTIVE_HOURS_TO && currentHour < ACTIVE_HOURS_FROM) {
@@ -64,9 +64,11 @@ async function init() {
     }
   }
 
-  go();
+  matrix.afterSync(() => {
+    setTimeout(run, DATA_FETCH_INTERVAL_SECONDS * 1000);
+  });
 
-  setInterval(go, DATA_FETCH_INTERVAL_SECONDS * 1000);
+  run();
 }
 
 init();
