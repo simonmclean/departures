@@ -25,3 +25,20 @@ STOP_POINT_ID
 npm run build
 sudo $(which node) ./dist/index.js
 ```
+
+### Running on startup
+
+```bash
+crontab -e
+# Add this line to the crontab
+@reboot /path/to/repo/pi_start.sh
+```
+
+To check and kill processes started by the cron
+
+```bash
+# See running processes
+ps aux | grep node
+# Kill it
+sudo pkill -f "/path/to/repo/dist/index.js"
+```
