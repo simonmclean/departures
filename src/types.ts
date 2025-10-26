@@ -1,16 +1,7 @@
 export type Departure = {
   destination: string;
-  platform: string;
-  scheduledDeparture?: Date;
-  estimatedDeparture?: Date;
+  scheduledDeparture: Date | undefined;
+  estimatedDeparture: Date | undefined;
   status: string;
-  delayInformation?: string;
+  delayInformation: string | undefined;
 };
-
-export type Platform = string;
-
-export type UpcomingDepartures =
-  | { first?: Departure }
-  | { first: Departure; second?: Departure };
-
-export type PlatformDepartures = Record<Platform, UpcomingDepartures>;

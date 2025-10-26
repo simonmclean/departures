@@ -1,4 +1,4 @@
-import { parsePlatformDepartures } from "./parsers";
+import { parseDepartures } from "./parsers";
 
 const BASE_URL = "https://api.tfl.gov.uk";
 
@@ -34,5 +34,5 @@ export async function getDepartures({
   line: string;
 }) {
   const url = `${BASE_URL}/StopPoint/${station}/ArrivalDepartures?lineIds=${line}&app_key=${apiKey}`;
-  return makeRequest(url, parsePlatformDepartures);
+  return makeRequest(url, parseDepartures);
 }

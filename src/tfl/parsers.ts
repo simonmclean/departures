@@ -1,9 +1,4 @@
-import {
-  Departure,
-  Platform,
-  UpcomingDepartures,
-  PlatformDepartures,
-} from "../types";
+import { Departure } from "../types";
 
 function parseRecord(thing: unknown): Record<string, unknown> {
   if (thing && typeof thing === "object" && !Array.isArray(thing)) {
@@ -38,7 +33,7 @@ function parseString(
         return value;
       }
       throw new Error(
-        `Expected object property "${prop}" to be a string: ${value}`,
+        `Expected object property "${prop}" to have type 'string': ${value}`,
       );
     }
     throw new Error(
@@ -77,84 +72,43 @@ function parseDate(
   }
 }
 
-function parseDestination(obj: Record<string, unknown>): Platform {
+function parseDestination(obj: Record<string, unknown>): string {
   const stringValue = parseString("destinationName", obj);
   const [shortName] = stringValue.split(" ");
   return shortName || stringValue;
 }
 
-export function parsePlatformDepartures(response: unknown): PlatformDepartures {
-  const departures = parseArray(response)
-    .map<Departure>((element) => {
-      const departure = parseRecord(element);
-      const destination = parseDestination(departure);
-      const scheduledDeparture = parseDate(
-        "scheduledTimeOfDeparture",
-        departure,
-        true,
-      );
-      const estimatedDeparture = parseDate(
-        "estimatedTimeOfDeparture",
-        departure,
-        true,
-      );
-      // Set seconds to zero (start of the minute) as we only want minute-level resolution.
-      // Otherwise a train might be considered delayed if it's running seconds later than scheduled.
-      scheduledDeparture?.setSeconds(0, 0);
-      estimatedDeparture?.setSeconds(0, 0);
-      const platform = parseString("platformName", departure);
-      const status = parseString("departureStatus", departure);
-      const delayInformation = parseString("cause", departure, true);
-      return {
-        platform,
-        destination,
-        status,
-        ...(scheduledDeparture ? { scheduledDeparture } : undefined),
-        ...(estimatedDeparture ? { estimatedDeparture } : undefined),
-        ...(delayInformation ? { delayInformation } : undefined),
-      };
-    })
-    .filter(({ platform }) => platform.includes("1") || platform.includes("2"));
-
-  const zipped = departures.map<[Platform, Departure]>((departure) => [
-    departure.platform,
-    departure,
-  ]);
-
-  const grouped = zipped.reduce<Record<Platform, Departure[]>>(
-    (result, [platform, departure]) => {
-      const existing = result[platform];
-
-      if (!existing) {
-        return {
-          ...result,
-          [platform]: [departure],
-        };
-      }
-
-      return {
-        ...result,
-        [platform]: [...existing, departure],
-      };
-    },
-    {},
+function parseDeparture<T extends {}>(object: T): Departure {
+  const destination = parseDestination(object);
+  const scheduledDeparture = parseDate(
+    "scheduledTimeOfDeparture",
+    object,
+    true,
   );
+  const estimatedDeparture = parseDate(
+    "estimatedTimeOfDeparture",
+    object,
+    true,
+  );
+  // Set seconds to zero (start of the minute) as we only want minute-level resolution.
+  // Otherwise a train might be considered delayed if it's running seconds later than scheduled.
+  scheduledDeparture?.setSeconds(0, 0);
+  estimatedDeparture?.setSeconds(0, 0);
+  const status = parseString("departureStatus", object);
+  const delayInformation = parseString("cause", object, true);
 
-  const withNextTwoDepartures = Object.entries(grouped).map<
-    [Platform, UpcomingDepartures]
-  >(([platform, departures]) => {
-    const sorted = departures.toSorted((a, b) => {
-      if (a.scheduledDeparture && b.scheduledDeparture) {
-        return a.scheduledDeparture < b.scheduledDeparture ? -1 : 1;
-      }
-      return 0;
-    });
+  return {
+    destination,
+    scheduledDeparture,
+    estimatedDeparture,
+    status,
+    delayInformation,
+  };
+}
 
-    const [first, second] = sorted;
-    const upcoming: UpcomingDepartures = first ? { first, second } : {};
-
-    return [platform, upcoming];
+export function parseDepartures(response: unknown): Departure[] {
+  return parseArray(response).map((element) => {
+    const object = parseRecord(element);
+    return parseDeparture(object);
   });
-
-  return Object.fromEntries(withNextTwoDepartures);
 }

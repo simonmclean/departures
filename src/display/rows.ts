@@ -1,5 +1,5 @@
 import { FontInstance, Glyph } from "rpi-led-matrix";
-import { Departure, PlatformDepartures } from "../types";
+import { Departure } from "../types";
 import { diffMinutes } from "../utils";
 
 type LATENESS_SEVERITY = "TRIVIAL" | "MINOR" | "SEVERE";
@@ -83,6 +83,10 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
       departure.estimatedDeparture,
     );
 
+    if (delayMins === 0) {
+      return ["On time", "green"];
+    }
+
     const delaySeverity = getDelaySeverity(delayMins);
 
     const formattedDate = formatDate(departure.estimatedDeparture);
@@ -112,19 +116,24 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
   };
 }
 
+const MAX_DATE = new Date(8640000000000000);
+
 export function departuresToRows(
-  platformDepartures: PlatformDepartures,
+  departures: Departure[],
   font: FontInstance,
 ): Row[] {
-  return Object.entries(platformDepartures).flatMap<Row>(([, departures]) => {
-    if ("first" in departures) {
-      const first = departureToRow(departures.first, font);
-      if ("second" in departures) {
-        const second = departureToRow(departures.second, font);
-        return [first, second];
+  return departures
+    .toSorted((a, b) => {
+      const aDeparture = a.estimatedDeparture || MAX_DATE;
+      const bDeparture = b.estimatedDeparture || MAX_DATE;
+      if (aDeparture < bDeparture) {
+        return 1;
       }
-      return [first];
-    }
-    return [];
-  });
+      if (bDeparture < aDeparture) {
+        return -1;
+      }
+      return 0;
+    })
+    .slice(0, 4)
+    .map((departure) => departureToRow(departure, font));
 }
