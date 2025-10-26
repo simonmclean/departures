@@ -28,4 +28,4 @@ $GIT_BIN pull
 # Build and run in the background
 npm install
 npm run build
-sudo $(which node) "$PROJECT_DIR/dist/index.js" &
+node "$PROJECT_DIR/dist/index.js" &

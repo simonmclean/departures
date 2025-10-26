@@ -19,7 +19,7 @@ LINE_ID
 STOP_POINT_ID
 ```
 
-### Build and run
+### Build and run manually
 
 ```bash
 npm run build
@@ -29,7 +29,9 @@ sudo $(which node) ./dist/index.js
 ### Running on startup
 
 ```bash
-crontab -e
+# Important to use the sudo crontab. Using the non-sudo crontab and pointing it to a script
+# that launches the program using sudo results in 2 instances being launched ¯\_(ツ)_/¯
+sudo crontab -e
 # Add this line to the crontab
 @reboot /path/to/repo/pi_start.sh
 ```
