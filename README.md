@@ -1,8 +1,6 @@
 # 🚉 Departures
 
-Raspberry Pi train departures board for LED matrix display.
-
-Designed to work for a single station with 2 platforms. Displays the next 4 departures, along with their status.
+Raspberry Pi train departures board for LED matrix display. Displays the next 4 departures, along with their status.
 
 Minimal dependancies.
 
