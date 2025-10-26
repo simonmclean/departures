@@ -126,13 +126,7 @@ export function departuresToRows(
     .toSorted((a, b) => {
       const aDeparture = a.estimatedDeparture || MAX_DATE;
       const bDeparture = b.estimatedDeparture || MAX_DATE;
-      if (aDeparture > bDeparture) {
-        return 1;
-      }
-      if (bDeparture > aDeparture) {
-        return -1;
-      }
-      return 0;
+      return bDeparture.getTime() - aDeparture.getTime();
     })
     .slice(0, 4)
     .map((departure) => departureToRow(departure, font));
