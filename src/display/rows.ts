@@ -124,9 +124,9 @@ export function departuresToRows(
 ): Row[] {
   return departures
     .toSorted((a, b) => {
-      const aDeparture = a.estimatedDeparture || MAX_DATE;
-      const bDeparture = b.estimatedDeparture || MAX_DATE;
-      return bDeparture.getTime() - aDeparture.getTime();
+      const aDeparture = a.scheduledDeparture || MAX_DATE;
+      const bDeparture = b.scheduledDeparture || MAX_DATE;
+      return aDeparture.getTime() - bDeparture.getTime();
     })
     .slice(0, 4)
     .map((departure) => departureToRow(departure, font));
