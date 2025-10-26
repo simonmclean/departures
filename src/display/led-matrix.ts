@@ -57,7 +57,7 @@ export function drawRows(
   font: FontInstance,
   rows: Row[],
 ): void {
-  matrix.brightness(BRIGHTNESS);
+  matrix.clear().brightness(BRIGHTNESS);
 
   let y = TEXT_PADDING;
 

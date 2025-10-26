@@ -41,6 +41,10 @@ async function init() {
   drawLoadingText(matrix);
 
   async function run() {
+    function runAgainSoon() {
+      setTimeout(run, DATA_FETCH_INTERVAL_SECONDS * 1000);
+    }
+
     try {
       const currentHour = new Date().getHours();
       if (currentHour > ACTIVE_HOURS_TO && currentHour < ACTIVE_HOURS_FROM) {
@@ -54,19 +58,14 @@ async function init() {
         line: env.LINE_ID,
       });
       const rows = departuresToRows(departures, font);
-      matrix.clear();
       drawRows(matrix, font, rows);
-      setTimeout(() => {
-        run();
-      }, DATA_FETCH_INTERVAL_SECONDS * 1000);
+      runAgainSoon();
     } catch (e) {
       const err =
         e instanceof Error ? e : new Error("An unknown error occured");
       console.error(err);
       drawErrorMessage(matrix, font, err);
-      setTimeout(() => {
-        run();
-      }, DATA_FETCH_INTERVAL_SECONDS * 1000);
+      runAgainSoon();
     }
   }
 
