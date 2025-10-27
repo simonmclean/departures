@@ -116,13 +116,20 @@ function departureToRow(departure: Departure, font: FontInstance): Row {
   };
 }
 
+function noTrains(font: FontInstance): Row {
+  return {
+    left: stringToGlyphs("No trains scheduled", "white", font),
+    right: [],
+  };
+}
+
 const MAX_DATE = new Date(8640000000000000);
 
 export function departuresToRows(
   departures: Departure[],
   font: FontInstance,
 ): Row[] {
-  return departures
+  const departureRows = departures
     .toSorted((a, b) => {
       const aDeparture = a.scheduledDeparture || MAX_DATE;
       const bDeparture = b.scheduledDeparture || MAX_DATE;
@@ -130,4 +137,6 @@ export function departuresToRows(
     })
     .slice(0, 4)
     .map((departure) => departureToRow(departure, font));
+
+  return departureRows.length > 0 ? departureRows : [noTrains(font)];
 }

@@ -1,28 +1,7 @@
+import { Departure } from "../types";
+import { memoizedGetStationDisplayName } from "./getStationName";
 import { parseDepartures } from "./parsers";
-
-const BASE_URL = "https://api.tfl.gov.uk";
-
-async function makeRequest<T>(
-  url: string,
-  handleResponse: (response: unknown) => T,
-): Promise<T> {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      if (response.status < 500) {
-        const body = await response.json();
-        throw new Error(`Response ${response.status}: ${JSON.stringify(body)}`);
-      }
-      throw new Error(`Response status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    return handleResponse(result);
-  } catch (e) {
-    // TODO: Handle error
-    throw e;
-  }
-}
+import { makeRequest } from "./request";
 
 export async function getDepartures({
   apiKey,
@@ -32,7 +11,33 @@ export async function getDepartures({
   apiKey: string;
   station: string;
   line: string;
-}) {
-  const url = `${BASE_URL}/StopPoint/${station}/ArrivalDepartures?lineIds=${line}&app_key=${apiKey}`;
-  return makeRequest(url, parseDepartures);
+}): Promise<Departure[]> {
+  const endpoint = `/StopPoint/${station}/ArrivalDepartures?lineIds=${line}&app_key=${apiKey}`;
+  const departures = await makeRequest(endpoint, parseDepartures);
+  // Enrich the departure response by getting the destination "commonName" from TFL, instead using the full name
+  const departurePromises = departures.map<Promise<Departure>>(
+    async ({
+      destination,
+      destinationId,
+      scheduledDeparture,
+      estimatedDeparture,
+      status,
+      delayInformation,
+    }) => {
+      const destinationDisplayName =
+        (await memoizedGetStationDisplayName({
+          apiKey,
+          stopId: destinationId,
+        })) || destination;
+
+      return {
+        destination: destinationDisplayName,
+        scheduledDeparture,
+        estimatedDeparture,
+        status,
+        delayInformation,
+      };
+    },
+  );
+  return Promise.all(departurePromises);
 }

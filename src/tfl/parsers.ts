@@ -1,27 +1,27 @@
 import { Departure } from "../types";
 
-function parseRecord(thing: unknown): Record<string, unknown> {
+export function parseRecord(thing: unknown): Record<string, unknown> {
   if (thing && typeof thing === "object" && !Array.isArray(thing)) {
     return thing as Record<string, unknown>;
   }
   throw new Error(`expected value to be an object: ${JSON.stringify(thing)}`);
 }
 
-function parseArray(thing: unknown): unknown[] {
+export function parseArray(thing: unknown): unknown[] {
   if (!Array.isArray(thing)) {
     throw new Error(`Expected value to be an array: ${JSON.stringify(thing)}`);
   }
   return thing;
 }
 
-function parseString(prop: string, obj: Record<string, unknown>): string;
-function parseString(
+export function parseString(prop: string, obj: Record<string, unknown>): string;
+export function parseString(
   prop: string,
   obj: Record<string, unknown>,
   optional: true,
 ): string | undefined;
 
-function parseString(
+export function parseString(
   prop: string,
   obj: Record<string, unknown>,
   optional?: true,
@@ -72,14 +72,11 @@ function parseDate(
   }
 }
 
-function parseDestination(obj: Record<string, unknown>): string {
-  const stringValue = parseString("destinationName", obj);
-  const [shortName] = stringValue.split(" ");
-  return shortName || stringValue;
-}
+type DepartureWithDestinationId = Departure & { destinationId: string };
 
-function parseDeparture<T extends {}>(object: T): Departure {
-  const destination = parseDestination(object);
+function parseDeparture<T extends {}>(object: T): DepartureWithDestinationId {
+  const destination = parseString("destinationName", object);
+  const destinationId = parseString("destinationNaptanId", object);
   const scheduledDeparture = parseDate(
     "scheduledTimeOfDeparture",
     object,
@@ -99,6 +96,7 @@ function parseDeparture<T extends {}>(object: T): Departure {
 
   return {
     destination,
+    destinationId,
     scheduledDeparture,
     estimatedDeparture,
     status,
@@ -106,7 +104,7 @@ function parseDeparture<T extends {}>(object: T): Departure {
   };
 }
 
-export function parseDepartures(response: unknown): Departure[] {
+export function parseDepartures(response: unknown): DepartureWithDestinationId[] {
   return parseArray(response).map((element) => {
     const object = parseRecord(element);
     return parseDeparture(object);
