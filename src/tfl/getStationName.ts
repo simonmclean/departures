@@ -1,4 +1,4 @@
-import { parseRecord, parseString } from "./parsers";
+import { parseObject, parseString } from "./parsers";
 import { makeRequest } from "./request";
 
 async function getStationDisplayName({
@@ -9,10 +9,9 @@ async function getStationDisplayName({
   stopId: string;
 }): Promise<string | undefined> {
   const endpoint = `/StopPoint/${stopId}?includeCrowdingData=false&app_key=${apiKey}`;
-  return makeRequest(endpoint, (response) => {
-    const object = parseRecord(response);
-    return parseString("commonName", object, true);
-  });
+  return makeRequest(endpoint, (response) =>
+    parseObject(response).optionalProp("commonName", parseString),
+  );
 }
 
 /**
