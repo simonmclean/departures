@@ -8,11 +8,7 @@ export function parseArray(thing: unknown): unknown[] {
 }
 
 export function parseObject(thing: unknown) {
-  if (!thing) {
-    throw new Error(`expected value to be an object: ${JSON.stringify(thing)}`);
-  }
-
-  if (typeof thing !== "object" || Array.isArray(thing)) {
+  if (!thing || typeof thing !== "object" || Array.isArray(thing)) {
     throw new Error(`expected value to be an object: ${JSON.stringify(thing)}`);
   }
 
