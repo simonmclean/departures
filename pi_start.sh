@@ -8,8 +8,8 @@ GIT_BIN="/usr/bin/git"
 
 # Uncomment these lines for logging and troubleshooting
 # You might want to comment out the git commands
-# exec >> "$PROJECT_DIR/cron.log" 2>&1
-# echo "---- $(date) boot job start ----"
+exec > "$PROJECT_DIR/cron.log" 2>&1
+echo "=== $(date) STARTING JOB ==="
 
 export NVM_DIR="$USER_HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
@@ -21,6 +21,7 @@ sleep 10
 nvm use 24 1> /dev/null
 
 # Update project
+$GIT_BIN config --global --add safe.directory $PROJECT_DIR
 $GIT_BIN fetch --all --prune
 $GIT_BIN reset --hard
 $GIT_BIN pull
