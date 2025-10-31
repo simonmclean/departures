@@ -16,9 +16,10 @@ Only dependency is [hzeller/rpi-rgb-led-matrix](https://github.com/hzeller/rpi-r
   "tflApiKey": "string",
   "lineId": "string",
   "stopPointId": "string",
-  "dataFetchIntervalSeconds": "number", // optional, defaults to 15
-  "activeHoursFrom": "number", // optional, defaults to 1
-  "activeHoursTo": "number", // optional, defaults to 8
+  // Optional values below
+  "dataFetchIntervalSeconds": "number", // default 15
+  "activeHoursFrom": "number", // default 1
+  "activeHoursTo": "number", // default 8
 }
 ```
 
