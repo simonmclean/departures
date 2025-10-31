@@ -2,19 +2,24 @@
 
 Raspberry Pi train departures board for LED matrix display. Displays the next 4 departures, along with their status.
 
-Minimal dependancies.
+Only dependency is [hzeller/rpi-rgb-led-matrix](https://github.com/hzeller/rpi-rgb-led-matrix) which is used to control the LED display.
 
 ## Running on the Pi
 
 ### Prerequisites
 
 - Node 24 is installed
-- `.env` file exists in the root with the following environment variables
+- `config.json` file exists in the root with the following schema
 
-```bash
-TFL_API_KEY
-LINE_ID
-STOP_POINT_ID
+```json
+{
+  "tflApiKey": "string",
+  "lineId": "string",
+  "stopPointId": "string",
+  "dataFetchIntervalSeconds": "number", # optional, defaults to 15
+  "activeHoursFrom": "number", # optional, defaults to 1
+  "activeHoursTo": "number", # optional, defaults to 8
+}
 ```
 
 ### Build and run manually
