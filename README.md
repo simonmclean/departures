@@ -11,14 +11,14 @@ Only dependency is [hzeller/rpi-rgb-led-matrix](https://github.com/hzeller/rpi-r
 - Node 24 is installed via [nvm](https://github.com/nvm-sh/nvm) (`nvm` is assumed in the `pi_start.sh` script)
 - `config.json` file exists in the root with the following schema
 
-```json
+```jsonc
 {
   "tflApiKey": "string",
   "lineId": "string",
   "stopPointId": "string",
-  "dataFetchIntervalSeconds": "number", # optional, defaults to 15
-  "activeHoursFrom": "number", # optional, defaults to 1
-  "activeHoursTo": "number", # optional, defaults to 8
+  "dataFetchIntervalSeconds": "number", // optional, defaults to 15
+  "activeHoursFrom": "number", // optional, defaults to 1
+  "activeHoursTo": "number", // optional, defaults to 8
 }
 ```
 
