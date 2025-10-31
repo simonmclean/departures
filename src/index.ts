@@ -1,6 +1,4 @@
-import "dotenv/config";
 import { getDepartures } from "./tfl/getDepartures";
-import { parseNonEmptyTrimmedString } from "./utils";
 import {
   drawErrorMessage,
   drawLoadingText,
@@ -8,26 +6,10 @@ import {
 } from "./display/led-matrix";
 import { departuresToRows } from "./display/rows";
 import { createFont, drawRows } from "./display/led-matrix";
-
-const DATA_FETCH_INTERVAL_SECONDS = 15;
-const ACTIVE_HOURS_FROM = 8; // 8am
-const ACTIVE_HOURS_TO = 1; // 1am
-
-function parseEnv(): {
-  TFL_API_KEY: string;
-  STOP_POINT_ID: string;
-  LINE_ID: string;
-} {
-  const { TFL_API_KEY, STOP_POINT_ID, LINE_ID } = process.env;
-  return {
-    TFL_API_KEY: parseNonEmptyTrimmedString(TFL_API_KEY),
-    STOP_POINT_ID: parseNonEmptyTrimmedString(STOP_POINT_ID),
-    LINE_ID: parseNonEmptyTrimmedString(LINE_ID),
-  };
-}
+import { getConfig } from "./config";
 
 async function init() {
-  const env = parseEnv();
+  const config = await getConfig();
   // NOTE: `font` variable must not be garbage collected, otherwise text rendering won't work
   const font = createFont();
   const matrix = setupLedMatrix(font);
@@ -43,15 +25,18 @@ async function init() {
   async function run() {
     try {
       const currentHour = new Date().getHours();
-      if (currentHour > ACTIVE_HOURS_TO && currentHour < ACTIVE_HOURS_FROM) {
-        // Switch off display outside active hours
+      // Switch off display outside active hours
+      if (
+        currentHour > config.activeHoursTo &&
+        currentHour < config.activeHoursFrom
+      ) {
         matrix.clear();
         return;
       }
       const departures = await getDepartures({
-        apiKey: env.TFL_API_KEY,
-        station: env.STOP_POINT_ID,
-        line: env.LINE_ID,
+        apiKey: config.tflApiKey,
+        station: config.stopPointId,
+        line: config.lineId,
       });
       const rows = departuresToRows(departures, font);
       drawRows(matrix, font, rows);
@@ -61,7 +46,7 @@ async function init() {
       console.error(err);
       drawErrorMessage(matrix, font, err);
     } finally {
-      setTimeout(run, DATA_FETCH_INTERVAL_SECONDS * 1000);
+      setTimeout(run, config.dataFetchIntervalSeconds * 1000);
     }
   }
 

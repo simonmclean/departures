@@ -12,7 +12,6 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "dotenv": "^17.2.3",
     "rpi-led-matrix": "^1.15.0"
   },
   "devDependencies": {

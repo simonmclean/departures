@@ -1,4 +1,4 @@
-import { parseObject, parseString } from "./parsers";
+import { parseObject, parseString } from "../parsers";
 import { makeRequest } from "./request";
 
 async function getStationDisplayName({
