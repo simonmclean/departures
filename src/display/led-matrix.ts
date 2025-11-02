@@ -36,7 +36,7 @@ export function setupLedMatrix(font: FontInstance): LedMatrixInstance {
     rows: 32,
     cols: 64,
     chainLength: 2,
-    hardwareMapping: GpioMapping.Regular,
+    hardwareMapping: GpioMapping.AdafruitHat,
     disableHardwarePulsing: true, // TODO: shouldn't have to do this
   };
 
