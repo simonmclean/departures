@@ -1,5 +1,5 @@
 import { Departure } from "../types";
-import { memoizedGetStationDisplayName } from "./getStationName";
+import { memoizedGetStationDisplayName } from "./stations";
 import { parseDepartures } from "./parsers";
 import { makeRequest } from "./request";
 

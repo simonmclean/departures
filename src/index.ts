@@ -1,4 +1,4 @@
-import { getDepartures } from "./tfl/getDepartures";
+import { getDepartures } from "./tfl/departures";
 import {
   drawErrorMessage,
   drawLoadingText,
